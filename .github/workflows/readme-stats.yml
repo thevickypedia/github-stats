@@ -2,6 +2,9 @@
 name: Update README cards
 
 on:
+  push:
+    branches:
+      - main
   schedule:
     - cron: "0 * * * *"
   workflow_dispatch:
@@ -16,26 +19,52 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Generate stats card
+      - name: Generate stats card (dormant-user)
         uses: stats-organization/github-readme-stats-action@v2
         with:
           card: stats
-          options: ${{ secrets.STATS_OPTIONS }}
-          path: profile/stats.svg
+          options: ${{ vars.STATS_OPTIONS_DORMANT }}
+          path: stats/stats-dormant.svg
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Generate top languages card
+      - name: Generate stats card (thevickypedia)
+        uses: stats-organization/github-readme-stats-action@v2
+        with:
+          card: stats
+          options: ${{ vars.STATS_OPTIONS_THEVICKYPEDIA }}
+          path: stats/stats-thevickypedia.svg
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate top languages card (dormant-user)
         uses: stats-organization/github-readme-stats-action@v2
         with:
           card: top-langs
-          options: ${{ secrets.TOP_LANGS_OPTIONS }}
-          path: profile/top-langs.svg
+          options: ${{ vars.TOP_LANGS_OPTIONS_DORMANT }}
+          path: stats/top-langs-dormant.svg
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate top languages card (thevickypedia)
+        uses: stats-organization/github-readme-stats-action@v2
+        with:
+          card: top-langs
+          options: ${{ vars.TOP_LANGS_OPTIONS_THEVICKYPEDIA }}
+          path: stats/top-langs-thevickypedia.svg
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit cards
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add profile/*.svg
+
+          # Try to delete the remote branch if it exists; ignore failure if it doesn't
+          git push origin --delete stats || true
+
+          # Create or switch to the local 'stats' branch
+          git checkout -b stats
+
+          # Stage and commit changes
+          git add stats/*.svg
           git commit -m "Update README cards" || exit 0
-          git push
+
+          # Push the branch, setting upstream if needed
+          git push -u origin stats
