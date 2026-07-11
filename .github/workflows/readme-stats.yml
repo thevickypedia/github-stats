@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - ".github/workflows/readme-stats.yml"
   schedule:
     - cron: "0 * * * *"
   workflow_dispatch:
@@ -24,7 +26,7 @@ jobs:
         with:
           card: stats
           options: ${{ vars.STATS_OPTIONS_DORMANT }}
-          path: stats/stats-dormant.svg
+          path: images/stats-dormant.svg
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate stats card (thevickypedia)
@@ -32,7 +34,7 @@ jobs:
         with:
           card: stats
           options: ${{ vars.STATS_OPTIONS_THEVICKYPEDIA }}
-          path: stats/stats-thevickypedia.svg
+          path: images/stats-thevickypedia.svg
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate top languages card (dormant-user)
@@ -40,7 +42,7 @@ jobs:
         with:
           card: top-langs
           options: ${{ vars.TOP_LANGS_OPTIONS_DORMANT }}
-          path: stats/top-langs-dormant.svg
+          path: images/top-langs-dormant.svg
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate top languages card (thevickypedia)
@@ -48,7 +50,7 @@ jobs:
         with:
           card: top-langs
           options: ${{ vars.TOP_LANGS_OPTIONS_THEVICKYPEDIA }}
-          path: stats/top-langs-thevickypedia.svg
+          path: images/top-langs-thevickypedia.svg
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit cards
@@ -63,7 +65,7 @@ jobs:
           git checkout -b stats
 
           # Stage and commit changes
-          git add stats/*.svg
+          git add images/*.svg
           git commit -m "Update README cards" || exit 0
 
           # Push the branch, setting upstream if needed
