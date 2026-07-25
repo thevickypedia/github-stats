@@ -13,7 +13,9 @@ on:
 
 jobs:
   build:
-    runs-on: thevickypedia-default
+    runs-on:
+      - thevickypedia-default
+      - Linux
 
     permissions:
       contents: write
